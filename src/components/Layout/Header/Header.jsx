@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import styles from './styles.module.css';
 import { Badge } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
@@ -9,13 +10,29 @@ const Header = () => {
   header, 
   headerTop, 
   shoppingCardImg, 
-  shoppingCardCounter, 
+  shoppingCartCounter, 
   mainNav, 
   secNav,
   notifcation,
-  activeLink} = styles
+  activeLink,
+  bumpCart} = styles
 
 let total = useSelector(totalQuantities)
+
+const [isAnimate, setIsAnimate] = useState(false)
+
+useEffect(() => {
+  if (total === 0) return
+  setIsAnimate(true)
+  const debounce = setTimeout(() => {
+    setIsAnimate(false)
+  }, 300)
+  return () => {
+    clearTimeout(debounce)
+  }
+}, [total])
+
+const cartClasses = `${shoppingCartCounter} ${isAnimate ? bumpCart : ''}`
 
   return (
     <header className={header}>
@@ -25,7 +42,7 @@ let total = useSelector(totalQuantities)
         </h1>
         <div className={styles.shoppingCard}>
           <img alt='' src={shoppingCardImg} width='30' />
-          <div className={shoppingCardCounter}>{total}</div>
+          <div className={cartClasses}>{total}</div>
         </div>
       </div>
 
